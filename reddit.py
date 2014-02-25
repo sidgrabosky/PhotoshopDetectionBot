@@ -14,7 +14,8 @@ keyPhrases = [
 	re.compile("I can tell (from|by) the pixels", re.IGNORECASE),
 	re.compile("^Fake.?$", re.IGNORECASE),
 	re.compile("doctored", re.IGNORECASE),
-	re.compile("photomanipulated", re.IGNORECASE)
+	re.compile("photomanipulated", re.IGNORECASE),
+	re.compile("ShopDetectionBot|PhotoshopBot", re.IGNORECASE) # Come when called. Good boy!
 ]
 
 # Regex to extract links to jpgs from comments
