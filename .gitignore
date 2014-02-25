@@ -3,3 +3,4 @@ sourceImages/**
 temp/**
 generatedImages/**
 downloadedImages/**
+*.pyc
