@@ -1,3 +1,5 @@
 diffImages/**
 sourceImages/**
 temp/**
+generatedImages/**
+downloadedImages/**

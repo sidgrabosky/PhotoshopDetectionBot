@@ -7,8 +7,8 @@ from os import listdir
 
 MAX_WIDTH = 1500.00     # These are floats to make division easier elsewhere
 MAX_HEIGHT = 1000.00
-SOURCE_IMAGE_DIRECTORY = './sourceImages/'
-DIFF_IMAGE_DIRECTORY = './diffImages/'
+SOURCE_IMAGE_DIRECTORY = './sample_sourceImages/'
+DIFF_IMAGE_DIRECTORY = './sample_diffImages/'
 TEMP = './temp/temp.jpg'   # Temp file used for holding compressed images pre-diff
 CONTRAST = 200      # How much to exaggerate the diff features. Higher makes differences more obvious, but adds noise
 BLUR_AMOUNT = 3     # How much to blur the blurred diffs. Higher suppresses more noise, but loses detail
