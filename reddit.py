@@ -32,7 +32,7 @@ def runBot():
 		
 		# Check comment for keyphrases
 		if any(phrase.search(comment.body) for phrase in keyPhrases):
-			print 'A regex was matched for comment id {}!'.format(comment.id)
+			print 'A regex was matched for comment id {} (parent: {})!'.format(comment.id, comment.parent_id)
 			print 'Matching comment body: {}'.format(comment.body)
 			
 			# Get images from parent comments (or the thread link/comment)
@@ -60,7 +60,7 @@ def findImagesInParentTree(parent_id, distance=1):
 		print "Could not find parent with valid images. Skipping."
 		return None
 
-	print "Trying to get parent"
+	print "Trying to get parent:"
 	parentComment = r.get_info(thing_id=parent_id)
 
 	if parentComment:
@@ -72,11 +72,8 @@ def findImagesInParentTree(parent_id, distance=1):
 			print "No valid image found. Try higher"
 			findImagesInParentTree(parentComment.id, distance+1)
 	else:
+		print "No valid images found in tree"
 		return None;
-
-	# parentIdClean = parent_id[3:]
-	# parentComment = r.get_submission("comment_id='" + parentIdClean + "'")
-	#print(vars(parentComment))
 
 # Extract images from a thread, from either URL or self text as appropriate
 def getImagesFromThread(thread_id):
@@ -107,6 +104,10 @@ def downloadImage(imageUrl):
 	fileName = str(commentsParsed) + ".jpg"
 	path = "./downloadedImages/" + fileName
 
+	## Prepend http if it's not included, otherwise urllib2 gets antsy
+	if imageUrl[:4] != "http":
+		imageUrl = "http://" + imageUrl
+
 	try:
 		# Download and save image. Adapted from example here: http://stackoverflow.com/a/22776
 		u = urllib2.urlopen(imageUrl)
@@ -129,9 +130,10 @@ def downloadImage(imageUrl):
 		# //
 	except urllib2.HTTPError as e:
 		print "HTTPError({0}): {1}. Oh well, who cares? Moving on...".format(e.errno, e.strerror)
-	
-	commentsParsed += 1
+	except:
+		print "Something mysterious went wrong. Not a big deal. There will be more images"
 
+	commentsParsed += 1
 	return fileName
 
 # Upload an image to Imgur
