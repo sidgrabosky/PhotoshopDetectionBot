@@ -15,16 +15,24 @@ BLUR_AMOUNT = 3     # How much to blur the blurred diffs. Higher suppresses more
 
 
 # Perform Image Error Analysis on a single image and saves resulting diff images
-def analyze(fileName):
+def analyze(fileName, sampleMode = False):
 
+    print "Starting analysis on {}".format(fileName)
+    
     startTime = datetime.now()
     fileNameNoExtension = fileName.rsplit( ".", 1 )[ 0 ];
+    if sampleMode:
+        filePath = './' + SOURCE_IMAGE_DIRECTORY + fileName
+        saveDirectory = DIFF_IMAGE_DIRECTORY
+    else:
+        filePath = './downloadedImages/' + fileName
+        saveDirectory = './generatedImages/'
 
     try:
-        original = Image.open('./' + SOURCE_IMAGE_DIRECTORY + fileName)
+        original = Image.open(filePath)
     except IOError as e:
         print "I/O error({0}): {1}".format(e.errno, e.strerror)
-        return 0
+        return None
 
     # Compress the file. We will use the differences to locate anomalies
     original.save(TEMP, quality=95)
@@ -54,14 +62,16 @@ def analyze(fileName):
     diffBlur = resizeImageToFit(diffBlur)
 
     diffFileName = fileNameNoExtension + "_diff.jpg"
-    diff.save(DIFF_IMAGE_DIRECTORY + diffFileName, quality=90)
+    diff.save(saveDirectory + diffFileName, quality=90)
 
-    diffFileName = fileNameNoExtension + "_diff_blur.jpg"
-    diffBlur.save(DIFF_IMAGE_DIRECTORY + diffFileName, quality=90)
+    diffBlurFileName = fileNameNoExtension + "_diff_blur.jpg"
+    diffBlur.save(saveDirectory + diffBlurFileName, quality=90)
 
     print(datetime.now()-startTime)
     print 'Done. Saved diff as {}'.format(diffFileName)
+    print 'Done. Saved diffblur as {}'.format(diffBlurFileName)
 
+    return (diffFileName, diffBlurFileName)
 
 # Resize an image to fit MAX_SIZE while maintaining aspect ratio; do not enlarge
 def resizeImageToFit(image, interpolation = Image.ANTIALIAS):
@@ -102,7 +112,7 @@ def convertImages():
     for file in listdir(SOURCE_IMAGE_DIRECTORY):
         if file.endswith(".jpg"):
             print 'Starting to process file {}'.format(file)
-            analyze(file)
+            analyze(file, True)
 
     print('Finished processing all. Total time passed: {}').format(datetime.now()-totalStart)
 
